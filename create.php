@@ -6,12 +6,17 @@ function __autoload($class)
 
 if (isset($_POST['submit'])) {
     $fields = [
-        'title' => $_POST['title'],
-        'descr' => $_POST['descr'],
-        'price' => $_POST['price']
+        'title' => htmlspecialchars($_POST['title']),
+        'descr' => htmlspecialchars($_POST['descr']),
+        'price' => htmlspecialchars($_POST['price'])
     ];
-    $product = new Product();
-    $product->insert($fields);
+
+    if (!in_array("", $fields)) {
+        $product = new Product();
+        $product->insert($fields);
+    } else {
+        $error = "All fields are required";
+    }
 }
 
 require_once "header.php";
@@ -37,6 +42,12 @@ require_once "header.php";
                         <label for="price">Price</label>
                         <input type="number" name="price" class="form-control">
                     </div>
+                    <?php if(isset($error)) { ?>
+                        <div class="alert alert-danger mt-2" role="alert">
+                            <?= $error; ?>
+                        </div>
+                    <?php } ?>
+
                     <input type="submit" name="submit" class="btn btn-primary" value="Submit">
                 </form>
 
